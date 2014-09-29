@@ -19,15 +19,22 @@ class MainWindow(QMainWindow):
 
         self.initial_layout()
         #self.showHostFile()
-    def showHostFile(self):
-        pass
-            
+
+    #This method populates the list widget with the current redirects in the host
+    #file.
+    
+    def populateListWidget(self):
+        hostFile = HostFile()
+        hostFileEntries = hostFile.getHostFileData()
+
+
+        
     def initial_layout(self):
         self.hostLabel = QLabel("Redirect to")
         self.hostLineEdit = QLineEdit()
         self.host2Label = QLabel("Redirect from")
         self.host2LineEdit = QLineEdit()
-
+        self.listWidget = QListWidget()
         self.updateButton = QPushButton("Add")
         
         self.layout1 = QHBoxLayout()
@@ -38,6 +45,12 @@ class MainWindow(QMainWindow):
         self.layout2.addWidget(self.host2Label)
         self.layout2.addWidget(self.host2LineEdit)
 
+
+
+        self.layout3 = QHBoxLayout()
+        self.layout3.addWidget(self.listWidget)
+        
+
         self.row1Widget = QWidget()
         self.row1Widget.setLayout(self.layout1)
 
@@ -45,12 +58,15 @@ class MainWindow(QMainWindow):
         self.row2Widget.setLayout(self.layout2)
 
 
+        self.row3Widget = QWidget()
+        self.row3Widget.setLayout(self.layout3)
 
 
 
         self.mainLayout = QVBoxLayout()
         self.mainLayout.addWidget(self.row1Widget)
         self.mainLayout.addWidget(self.row2Widget)
+        self.mainLayout.addWidget(self.row3Widget)
         self.mainLayout.addWidget(self.updateButton)
 
         self.mainWidget = QWidget()
@@ -68,17 +84,15 @@ def getAdmin():
         script = os.path.abspath(sys.argv[0])
         params = ' '.join([script] + sys.argv[1:] + [ASADMIN])
         shell.ShellExecuteEx(lpVerb='runas', lpFile=sys.executable, lpParameters=params)
+
+
+
 if __name__ == "__main__":
-    import subprocess as sp
-    programName = "notepad.exe"
-    fileName = "C:\Windows\System32\drivers\etc\hosts"
-    sp.Popen([programName, fileName])
+
     app =  QApplication(sys.argv)
     window = MainWindow()
     window.show()
     window.raise_()
     #get admin privalleges from the user.
-    getAdmin()
-
     app.exec_()
     
